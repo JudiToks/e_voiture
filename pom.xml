@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>cloudy_spring</artifactId>
+    <groupId>cloudy</groupId>
+    <artifactId>e_voiture</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>cloudy_spring</name>
-    <description>cloudy_spring</description>
+    <name>e_voiture</name>
+    <description>e_voiture</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -24,6 +24,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
