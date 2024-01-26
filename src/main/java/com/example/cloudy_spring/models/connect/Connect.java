@@ -9,9 +9,9 @@ public class Connect
     public static Connection connectToPostgre() throws SQLException
     {
         Connection connection = null;
-        String url = "jdbc:postgresql://localhost:5432/e_voiture";
+        String url = "jdbc:postgresql://monorail.proxy.rlwy.net:24257/railway";
         String user = "postgres";
-        String password = "root";
+        String password = "-G5a*f1GF45BCEC--FG1EgBF3-g-41gd";
         try
         {
             Class.forName("org.postgresql.Driver");
