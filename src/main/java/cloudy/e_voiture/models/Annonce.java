@@ -6,10 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -280,4 +277,48 @@ public class Annonce
         }
         return valiny;
     }
+
+//    public void insert(Connection connection) throws SQLException {
+//        boolean isOuvert = false;
+//        try
+//        {
+//            if (connection == null)
+//            {
+//                connection = Connect.connectToPostgre();
+//                isOuvert = true;
+//            }
+//            String sql = "INSERT INTO "+this.getClass().getSimpleName().toLowerCase()+" VALUES(default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+//            preparedStatement.setInt(1, this.getAnnee());
+//            preparedStatement.setDouble(2, this.getConso());
+//            preparedStatement.setDate(3, this.getDate_annonce());
+//            preparedStatement.setString(4, this.getDescription());
+//            preparedStatement.setInt(5, this.getEtat());
+//            preparedStatement.setInt(6, this.getId_carburant());
+//            preparedStatement.setInt(7, this.getId_categorie());
+//            preparedStatement.setInt(8, this.getId_couleur());
+//            preparedStatement.setInt(9, this.getId_marque());
+//            preparedStatement.setInt(10, this.getId_modeles());
+//            preparedStatement.setInt(11, this.getId_moteur());
+//            preparedStatement.setInt(12, this.getId_transmission());
+//            preparedStatement.setInt(13, this.getId_user());
+//            preparedStatement.setDouble(14, this.getKilometrage());
+//            preparedStatement.setInt(15, this.getNbr_place());
+//            preparedStatement.setInt(16, this.getNbr_porte());
+//            preparedStatement.setDouble(17, this.getPrix());
+//            preparedStatement.execute();
+//        }
+//        catch (SQLException e)
+//        {
+//            System.out.println("Insertion "+this.getClass().getSimpleName()+" issues");
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            if (isOuvert)
+//            {
+//                connection.close();
+//            }
+//        }
+//    }
 }

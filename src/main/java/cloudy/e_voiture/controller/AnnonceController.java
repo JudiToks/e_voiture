@@ -1,6 +1,7 @@
 package cloudy.e_voiture.controller;
 
 import cloudy.e_voiture.models.Annonce;
+import cloudy.e_voiture.models.AnnonceRequest;
 import cloudy.e_voiture.repository.AnnonceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,12 +52,13 @@ public class AnnonceController
 //    }
 
     @PostMapping("/save")
-    public HashMap<String, Object> save(@RequestBody String description, @RequestBody int nbr_place, @RequestBody int nbr_porte, @RequestBody int etat, @RequestBody double kilometrage, @RequestBody double conso, @RequestBody int annee, @RequestBody int id_user, @RequestBody int id_carburant, @RequestBody int id_transmission, @RequestBody int id_moteur, @RequestBody int id_categorie, @RequestBody int id_couleur, @RequestBody int id_modeles, @RequestBody int id_marque, @RequestBody double prix)
+    public HashMap<String, Object> save(@RequestBody AnnonceRequest annonceParam)
     {
         HashMap<String, Object> object = new HashMap<>();
         try
         {
-            Annonce annonce = new Annonce(description, nbr_place, nbr_porte, etat, kilometrage, conso, new Date(System.currentTimeMillis()), annee, id_user, id_carburant, id_transmission, id_moteur, id_categorie, id_couleur, id_modeles, id_marque, prix);
+            Annonce annonce = new Annonce(annonceParam.getDescription(), annonceParam.getNbr_place(), annonceParam.getNbr_porte(), annonceParam.getEtat(), annonceParam.getKilometrage(), annonceParam.getConso(), annonceParam.getDate_annonce(), annonceParam.getAnnee(), annonceParam.getId_user(), annonceParam.getId_carburant(), annonceParam.getId_transmission(), annonceParam.getId_moteur(), annonceParam.getId_categorie(), annonceParam.getId_couleur(), annonceParam.getId_modeles(), annonceParam.getId_marque(), annonceParam.getPrix());
+            annonce.setDate_annonce(new Date(System.currentTimeMillis()));
             annonceRepository.save(annonce);
             object.put("status", new ResponseEntity<>(OK));
         }

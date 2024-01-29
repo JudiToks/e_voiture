@@ -4,14 +4,15 @@ import cloudy.e_voiture.config.AuthenticationService;
 import cloudy.e_voiture.models.AuthenticationRequest;
 import cloudy.e_voiture.models.AuthenticationResponse;
 import cloudy.e_voiture.models.RegisterRequest;
+import cloudy.e_voiture.models.Utilisateur;
+import cloudy.e_voiture.repository.UtilisateurRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+    private final UtilisateurRepository utilisateurRepository;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -33,5 +35,11 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(service.autenticate(request));
+    }
+
+    @GetMapping("/findUserByEmail/{email}")
+    public Optional<Utilisateur> findUserByEmail(@PathVariable String email)
+    {
+        return utilisateurRepository.findByEmail(email);
     }
 }
