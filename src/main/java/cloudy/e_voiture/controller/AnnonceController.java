@@ -3,10 +3,14 @@ package cloudy.e_voiture.controller;
 import cloudy.e_voiture.models.Annonce;
 import cloudy.e_voiture.repository.AnnonceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/annonce")
@@ -39,11 +43,28 @@ public class AnnonceController
         return listAnnonce;
     }
 
-    @PostMapping("/save/{nom}/{description}/{nbr_place}/{nbr_porte}/{etat}/{kilometrage}/{conso}/{date_annonce}/{annee}/{id_user}/{id_carburant}/{id_transmission}/{id_moteur}/{id_categorie}/{id_couleur}/{id_modeles}/{id_marque}")
-    public Annonce save(@PathVariable String nom, @PathVariable String description, @PathVariable int nbr_place, @PathVariable int nbr_porte, @PathVariable int etat, @PathVariable double kilometrage, @PathVariable double conso, @PathVariable Date date_annonce, @PathVariable int annee, @PathVariable int id_user, @PathVariable int id_carburant, @PathVariable int id_transmission, @PathVariable int id_moteur, @PathVariable int id_categorie, @PathVariable int id_couleur, @PathVariable int id_modeles, @PathVariable int id_marque)
+//    @PostMapping("/save/{nom}/{description}/{nbr_place}/{nbr_porte}/{etat}/{kilometrage}/{conso}/{date_annonce}/{annee}/{id_user}/{id_carburant}/{id_transmission}/{id_moteur}/{id_categorie}/{id_couleur}/{id_modeles}/{id_marque}")
+//    public Annonce save(@PathVariable String nom, @PathVariable String description, @PathVariable int nbr_place, @PathVariable int nbr_porte, @PathVariable int etat, @PathVariable double kilometrage, @PathVariable double conso, @PathVariable Date date_annonce, @PathVariable int annee, @PathVariable int id_user, @PathVariable int id_carburant, @PathVariable int id_transmission, @PathVariable int id_moteur, @PathVariable int id_categorie, @PathVariable int id_couleur, @PathVariable int id_modeles, @PathVariable int id_marque)
+//    {
+//        Annonce annonce = new Annonce(0, description, nbr_place, nbr_porte, etat, kilometrage, conso, date_annonce, annee, id_user, id_carburant, id_transmission, id_moteur, id_categorie, id_couleur, id_modeles, id_marque);
+//        return annonceRepository.save(annonce);
+//    }
+
+    @PostMapping("/save")
+    public HashMap<String, Object> save(@RequestBody String description, @RequestBody int nbr_place, @RequestBody int nbr_porte, @RequestBody int etat, @RequestBody double kilometrage, @RequestBody double conso, @RequestBody int annee, @RequestBody int id_user, @RequestBody int id_carburant, @RequestBody int id_transmission, @RequestBody int id_moteur, @RequestBody int id_categorie, @RequestBody int id_couleur, @RequestBody int id_modeles, @RequestBody int id_marque, @RequestBody double prix)
     {
-        Annonce annonce = new Annonce(0, description, nbr_place, nbr_porte, etat, kilometrage, conso, date_annonce, annee, id_user, id_carburant, id_transmission, id_moteur, id_categorie, id_couleur, id_modeles, id_marque);
-        return annonceRepository.save(annonce);
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Annonce annonce = new Annonce(description, nbr_place, nbr_porte, etat, kilometrage, conso, new Date(System.currentTimeMillis()), annee, id_user, id_carburant, id_transmission, id_moteur, id_categorie, id_couleur, id_modeles, id_marque, prix);
+            annonceRepository.save(annonce);
+            object.put("status", new ResponseEntity<>(OK));
+        }
+        catch (Exception e)
+        {
+            object.put("error", e.getMessage());
+        }
+        return object;
     }
 
     @PostMapping("/delete/{id_annonce}")

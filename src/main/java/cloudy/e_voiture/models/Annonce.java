@@ -35,8 +35,21 @@ public class Annonce
     private int id_couleur;
     private int id_modeles;
     private int id_marque;
+    double prix;
+
 
     //    getters & setters
+    public double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(double prix) throws Exception {
+        if (prix <= 0)
+        {
+            throw new Exception("Le prix doit etre superieur a 0");
+        }
+        this.prix = prix;
+    }
     public int getId_annonce() {
         return id_annonce;
     }
@@ -57,7 +70,11 @@ public class Annonce
         return nbr_place;
     }
 
-    public void setNbr_place(int nbr_place) {
+    public void setNbr_place(int nbr_place) throws Exception {
+        if (nbr_place <= 0)
+        {
+            throw new Exception("Nombre de place doit etre 2 ou plus");
+        }
         this.nbr_place = nbr_place;
     }
 
@@ -65,7 +82,10 @@ public class Annonce
         return nbr_porte;
     }
 
-    public void setNbr_porte(int nbr_porte) {
+    public void setNbr_porte(int nbr_porte) throws Exception {
+        if (nbr_porte < 3) {
+            throw new Exception("Nombre de porte doit etre 3 ou plus");
+        }
         this.nbr_porte = nbr_porte;
     }
 
@@ -81,7 +101,11 @@ public class Annonce
         return kilometrage;
     }
 
-    public void setKilometrage(double kilometrage) {
+    public void setKilometrage(double kilometrage) throws Exception {
+        if (kilometrage <= 0)
+        {
+            throw new Exception("Le kilometrage doit etre supérieure à 0");
+        }
         this.kilometrage = kilometrage;
     }
 
@@ -89,7 +113,10 @@ public class Annonce
         return conso;
     }
 
-    public void setConso(double conso) {
+    public void setConso(double conso) throws Exception {
+        if (conso <= 0) {
+            throw new Exception("La consommation doit etre positive");
+        }
         this.conso = conso;
     }
 
@@ -175,14 +202,13 @@ public class Annonce
 
     //    contrsuctor
     protected Annonce() {}
-    public Annonce(int id_annonce, String description, int nbr_place, int nbr_porte, int etat, double kilometrage, double conso, Date date_annonce, int annee, int id_user, int id_carburant, int id_transmission, int id_moteur, int id_categorie, int id_couleur, int id_modeles, int id_marque) {
-        this.id_annonce = id_annonce;
+    public Annonce(String description, int nbr_place, int nbr_porte, int etat, double kilometrage, double conso, Date date_annonce, int annee, int id_user, int id_carburant, int id_transmission, int id_moteur, int id_categorie, int id_couleur, int id_modeles, int id_marque, double prix) throws Exception {
         this.description = description;
-        this.nbr_place = nbr_place;
-        this.nbr_porte = nbr_porte;
+        this.setNbr_place(nbr_place);
+        this.setNbr_porte(nbr_porte);
         this.etat = etat;
-        this.kilometrage = kilometrage;
-        this.conso = conso;
+        this.setKilometrage(kilometrage);
+        this.setConso(conso);
         this.date_annonce = date_annonce;
         this.annee = annee;
         this.id_user = id_user;
@@ -193,6 +219,7 @@ public class Annonce
         this.id_couleur = id_couleur;
         this.id_modeles = id_modeles;
         this.id_marque = id_marque;
+        this.setPrix(prix);
     }
 
     @Override
