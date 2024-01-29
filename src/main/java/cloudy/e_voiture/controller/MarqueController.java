@@ -1,6 +1,5 @@
 package cloudy.e_voiture.controller;
 
-import cloudy.e_voiture.models.Carburant;
 import cloudy.e_voiture.models.Marque;
 import cloudy.e_voiture.models.connect.Connect;
 import cloudy.e_voiture.repository.MarqueRepository;

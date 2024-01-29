@@ -58,6 +58,7 @@ public class AnnonceController
         {
             Annonce annonce = new Annonce(annonceParam.getDescription(), annonceParam.getNbr_place(), annonceParam.getNbr_porte(), annonceParam.getEtat(), annonceParam.getKilometrage(), annonceParam.getConso(), annonceParam.getDate_annonce(), annonceParam.getAnnee(), annonceParam.getId_user(), annonceParam.getId_carburant(), annonceParam.getId_transmission(), annonceParam.getId_moteur(), annonceParam.getId_categorie(), annonceParam.getId_couleur(), annonceParam.getId_modeles(), annonceParam.getId_marque(), annonceParam.getPrix());
             annonce.setDate_annonce(new Date(System.currentTimeMillis()));
+            annonce.setPrix(annonce.getPrix() + (annonce.getPrix() * 20) / 100);
             Annonce savedAnnonce = annonceRepository.save(annonce);
 
             // Retrieve the ID from the saved entity
@@ -111,13 +112,32 @@ public class AnnonceController
     }
 
     @GetMapping("/findAllAnnonceValide")
-    public HashMap<String, Object> findAllAnnonceValide(@PathVariable int id_user)
+    public HashMap<String, Object> findAllAnnonceValide()
     {
         HashMap<String, Object> object = new HashMap<>();
         try
         {
             Connection connection = Connect.connectToPostgre();
             List<AnnonceUser> listAnnonce = AnnonceUser.findAllAnnonceValider(connection);
+            object.put("allAnnonces", listAnnonce);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+
+        }
+        return object;
+    }
+
+    @GetMapping("/findAllAnnonceNonValide")
+    public HashMap<String, Object> findAllAnnonceNonValide()
+    {
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Connection connection = Connect.connectToPostgre();
+            List<AnnonceUser> listAnnonce = AnnonceUser.findAllAnnonceNonValider(connection);
             object.put("allAnnonces", listAnnonce);
             object.put("status", new ResponseEntity<>(HttpStatus.OK));
             connection.close();

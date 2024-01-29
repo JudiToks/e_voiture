@@ -150,11 +150,49 @@ CREATE TABLE Vendu(
    FOREIGN KEY(Id_Annonce) REFERENCES Annonce(Id_Annonce)
 );
 
+-- ############################################################
+
+-- statistique commission
+SELECT
+    SUM(montant) AS total_montant,
+    EXTRACT(MONTH FROM date_recu) AS mois,
+    EXTRACT(YEAR FROM date_recu) AS annee
+FROM compte_commissionaire
+GROUP BY mois, annee
+ORDER BY annee, mois
+LIMIT 12;
+
+
+-- statistique best vendeur
+select
+    u.nom,
+    count(v.Id_Annonce) as nombre
+from Vendu v
+    join Annonce a on a.Id_Annonce = v.Id_Annonce
+    join Utilisateur u on u.Id_User = a.Id_User
+group by u.nom
+order by nombre desc
+limit 7;
+
+
+-- statistique best marque vendu
+select
+    nom,
+    count(v.Id_Annonce) as nombre
+from Vendu v
+         join Annonce a on a.Id_Annonce = v.Id_Annonce
+         join marque m on m.id_marque = a.id_marque
+group by nom
+order by nombre desc
+limit 7;
+
+
 select
     *
 from annonce a
     join Status_lettre st on st.nombre = a.etat
 where Id_User = 1;
+
 
 with all_annonce as (
     select

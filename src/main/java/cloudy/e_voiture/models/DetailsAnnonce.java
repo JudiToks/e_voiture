@@ -66,7 +66,7 @@ public class DetailsAnnonce
             List<String> urls= new ArrayList<>();
             while (resultSet.next())
             {
-                String url= resultSet.getString("url_image");
+                String url = resultSet.getString("url_image");
                 urls.add(url);
             }
             detailsAnnonce.setUrls(urls.toArray(new String[0]));
