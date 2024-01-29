@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/annonce")
 public class AnnonceController

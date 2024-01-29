@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
