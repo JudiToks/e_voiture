@@ -110,6 +110,25 @@ public class AnnonceController
         return object;
     }
 
+    @GetMapping("/findAllAnnonceValide")
+    public HashMap<String, Object> findAllAnnonceValide(@PathVariable int id_user)
+    {
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Connection connection = Connect.connectToPostgre();
+            List<AnnonceUser> listAnnonce = AnnonceUser.findAllAnnonceValider(connection);
+            object.put("allAnnonces", listAnnonce);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+
+        }
+        return object;
+    }
+
     @PostMapping("/updateEtat")
     public HashMap<String, Object> update(@RequestBody AnnonceRequest annonceRequest)
     {

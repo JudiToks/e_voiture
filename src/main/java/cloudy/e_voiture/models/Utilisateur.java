@@ -1,8 +1,14 @@
 package cloudy.e_voiture.models;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import java.util.List;
+
+import cloudy.e_voiture.models.connect.Connect;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,5 +88,40 @@ public class Utilisateur implements UserDetails {
     public boolean isEnabled() {
         // TODO Auto-generated method stub
         return true;
+    }
+
+    public static List<String> getAllEmailUser(Connection connection)
+    {
+        boolean isOuvert = false;
+        List<String> valiny = new ArrayList<>();
+        String query = "select email from utilisateur;";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+            {
+                String temp = "";
+                temp = resultSet.getString(1);
+                valiny.add(temp);
+            }
+            resultSet.close();
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("Utilisateur getAllEmailUser issues");
+            e.printStackTrace();
+        }
+        return valiny;
     }
 }

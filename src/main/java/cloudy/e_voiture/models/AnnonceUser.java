@@ -245,4 +245,58 @@ public class AnnonceUser
         }
         return valiny;
     }
+
+    public static List<AnnonceUser> findAllAnnonceValider(Connection connection)
+    {
+        boolean isOuvert = false;
+        List<AnnonceUser> valiny = new ArrayList<>();
+        String query = "select * from v_annonces where etat between 10 and 19";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+            {
+                AnnonceUser temp = new AnnonceUser();
+                temp.setId_annonce(resultSet.getInt("id_annonce"));
+                temp.setDescription(resultSet.getString("description"));
+                temp.setDate_annonce(resultSet.getDate("date_annonce"));
+                temp.setConso(resultSet.getDouble("conso"));
+                temp.setAnnee(resultSet.getInt("annee"));
+                temp.setKilometrage(resultSet.getDouble("kilometrage"));
+                temp.setNbr_place(resultSet.getInt("nbr_place"));
+                temp.setNbr_porte(resultSet.getInt("nbr_porte"));
+                temp.setCarburant(resultSet.getString("nom_carburant"));
+                temp.setCategorie(resultSet.getString("nom_categorie"));
+                temp.setCouleur(resultSet.getString("nom_couleur"));
+                temp.setMarque(resultSet.getString("nom_marque"));
+                temp.setModeles(resultSet.getString("nom_modele"));
+                temp.setMoteur(resultSet.getString("nom_moteur"));
+                temp.setTransmission(resultSet.getString("nom_transmission"));
+                temp.setNom_etat(resultSet.getString("nom_etat"));
+                temp.setPrix(resultSet.getDouble("prix"));
+                temp.setEtat(resultSet.getInt("etat"));
+                DetailsAnnonce temp1 = new DetailsAnnonce();
+                temp.setDetailsAnnonce(temp1.getAllDetailsByIdAnnonce(connection, temp.getId_annonce()));
+                valiny.add(temp);
+            }
+            resultSet.close();
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("AnnonceUser findAllAnnonceValider issues");
+            e.printStackTrace();
+        }
+        return valiny;
+    }
 }
