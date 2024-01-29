@@ -45,7 +45,7 @@ public class Model
     public static void update(Connection connection, int id_model, String nom)
     {
         boolean isOuvert = false;
-        String query = "update modeles set id_model = "+id_model+" where nom = '"+nom+"';";
+        String query = "update modeles set nom = '"+nom+"' where id_model = "+id_model+";";
         try
         {
             if (connection == null)

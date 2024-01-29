@@ -49,7 +49,7 @@ public class Categorie {
     public static void update(Connection connection, int id_Categorie, String nom)
     {
         boolean isOuvert = false;
-        String query = "update categorie set id_categorie = "+id_Categorie+" where nom = '"+nom+"';";
+        String query = "update categorie set nom = '"+nom+"' where id_categorie = "+id_Categorie+";";
         try
         {
             if (connection == null)

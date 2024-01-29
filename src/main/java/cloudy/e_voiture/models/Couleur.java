@@ -49,7 +49,7 @@ public class Couleur {
     public static void update(Connection connection, int id_couleur, String nom)
     {
         boolean isOuvert = false;
-        String query = "update couleur set id_couleur = "+id_couleur+" where nom = '"+nom+"';";
+        String query = "update couleur set nom = '"+nom+"' where id_couleur = "+id_couleur+";";
         try
         {
             if (connection == null)

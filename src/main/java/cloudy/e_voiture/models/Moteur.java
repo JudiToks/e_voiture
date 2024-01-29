@@ -47,7 +47,7 @@ public class Moteur
     public static void update(Connection connection, int id_moteur, String nom)
     {
         boolean isOuvert = false;
-        String query = "update moteur set id_moteur = "+id_moteur+" where nom = '"+nom+"';";
+        String query = "update moteur set nom = '"+nom+"' where id_moteur = "+id_moteur+";";
         try
         {
             if (connection == null)

@@ -47,7 +47,7 @@ public class Marque
     public static void update(Connection connection, int id_marque, String nom)
     {
         boolean isOuvert = false;
-        String query = "update marque set id_marque = "+id_marque+" where nom = '"+nom+"';";
+        String query = "update marque set nom = '"+nom+"' where id_marque = "+id_marque+";";
         try
         {
             if (connection == null)

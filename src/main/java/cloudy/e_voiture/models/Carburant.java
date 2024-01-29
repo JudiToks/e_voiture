@@ -49,7 +49,7 @@ public class Carburant {
     public static void update(Connection connection, int id_carburant, String nom)
     {
         boolean isOuvert = false;
-        String query = "update carburant set id_carburant = "+id_carburant+" where nom = '"+nom+"';";
+        String query = "update carburant set nom = '"+nom+"' where id_carburant = "+id_carburant+";";
         try
         {
             if (connection == null)

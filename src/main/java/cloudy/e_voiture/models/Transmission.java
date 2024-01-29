@@ -47,7 +47,7 @@ public class Transmission
     public static void update(Connection connection, int id_transmission, String nom)
     {
         boolean isOuvert = false;
-        String query = "update transmission set id_transmission = "+id_transmission+" where nom = '"+nom+"';";
+        String query = "update transmission set nom = '"+nom+"' where id_transmission = "+id_transmission+";";
         try
         {
             if (connection == null)
