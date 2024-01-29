@@ -1,12 +1,18 @@
 package cloudy.e_voiture.controller;
 
+import cloudy.e_voiture.models.Carburant;
 import cloudy.e_voiture.models.Couleur;
+import cloudy.e_voiture.models.connect.Connect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cloudy.e_voiture.repository.CouleurRepository;
 
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @CrossOrigin
 @RestController
@@ -34,6 +40,23 @@ public class CouleurController {
     public Couleur save(@PathVariable String nom) {
         Couleur Couleur=new Couleur(nom);
         return CouleurRepository.save(Couleur);
+    }
+
+    @GetMapping("/update/{id}/{nom}")
+    public HashMap<String, Object> update(@PathVariable int id, @PathVariable String nom)
+    {
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Connection connection = Connect.connectToPostgre();
+            Couleur.update(connection, id, nom);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+        }
+        return object;
     }
 
     @DeleteMapping("deleteById/{id}")

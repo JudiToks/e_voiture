@@ -1,10 +1,7 @@
 package cloudy.e_voiture.models;
 
 import cloudy.e_voiture.models.connect.Connect;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -33,7 +30,6 @@ public class Annonce
     private int id_modeles;
     private int id_marque;
     double prix;
-
 
     //    getters & setters
     public double getPrix() {
@@ -198,7 +194,7 @@ public class Annonce
     }
 
     //    contrsuctor
-    protected Annonce() {}
+    public Annonce() {}
     public Annonce(String description, int nbr_place, int nbr_porte, int etat, double kilometrage, double conso, Date date_annonce, int annee, int id_user, int id_carburant, int id_transmission, int id_moteur, int id_categorie, int id_couleur, int id_modeles, int id_marque, double prix) throws Exception {
         this.description = description;
         this.setNbr_place(nbr_place);
@@ -278,47 +274,85 @@ public class Annonce
         return valiny;
     }
 
-//    public void insert(Connection connection) throws SQLException {
-//        boolean isOuvert = false;
-//        try
-//        {
-//            if (connection == null)
-//            {
-//                connection = Connect.connectToPostgre();
-//                isOuvert = true;
-//            }
-//            String sql = "INSERT INTO "+this.getClass().getSimpleName().toLowerCase()+" VALUES(default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-//            preparedStatement.setInt(1, this.getAnnee());
-//            preparedStatement.setDouble(2, this.getConso());
-//            preparedStatement.setDate(3, this.getDate_annonce());
-//            preparedStatement.setString(4, this.getDescription());
-//            preparedStatement.setInt(5, this.getEtat());
-//            preparedStatement.setInt(6, this.getId_carburant());
-//            preparedStatement.setInt(7, this.getId_categorie());
-//            preparedStatement.setInt(8, this.getId_couleur());
-//            preparedStatement.setInt(9, this.getId_marque());
-//            preparedStatement.setInt(10, this.getId_modeles());
-//            preparedStatement.setInt(11, this.getId_moteur());
-//            preparedStatement.setInt(12, this.getId_transmission());
-//            preparedStatement.setInt(13, this.getId_user());
-//            preparedStatement.setDouble(14, this.getKilometrage());
-//            preparedStatement.setInt(15, this.getNbr_place());
-//            preparedStatement.setInt(16, this.getNbr_porte());
-//            preparedStatement.setDouble(17, this.getPrix());
-//            preparedStatement.execute();
-//        }
-//        catch (SQLException e)
-//        {
-//            System.out.println("Insertion "+this.getClass().getSimpleName()+" issues");
-//            e.printStackTrace();
-//        }
-//        finally
-//        {
-//            if (isOuvert)
-//            {
-//                connection.close();
-//            }
-//        }
-//    }
+    public static List<Annonce> getAllAnnonceByIdUser(Connection connection, int id_user)
+    {
+        boolean isOuvert = false;
+        List<Annonce> valiny = new ArrayList<>();
+        String query = "select\n" +
+                "    *\n" +
+                "from annonce a\n" +
+                "    join Status_lettre st on st.nombre = a.etat\n" +
+                "where Id_User = "+id_user+";";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+            {
+                Annonce temp = new Annonce();
+                temp.setId_annonce(resultSet.getInt("id_annonce"));
+                temp.setDescription(resultSet.getString("description"));
+                temp.setDate_annonce(resultSet.getDate("description"));
+                temp.setDescription(resultSet.getString("date_annonce"));
+                temp.setConso(resultSet.getDouble("conso"));
+                temp.setAnnee(resultSet.getInt("annee"));
+                temp.setKilometrage(resultSet.getDouble("kilometrage"));
+                temp.setNbr_place(resultSet.getInt("nbr_place"));
+                temp.setNbr_porte(resultSet.getInt("nbr_porte"));
+                temp.setId_user(resultSet.getInt("id_user"));
+                temp.setId_carburant(resultSet.getInt("id_carburant"));
+                temp.setId_marque(resultSet.getInt("id_marque"));
+                temp.setId_modeles(resultSet.getInt("id_modeles"));
+                temp.setId_categorie(resultSet.getInt("id_categorie"));
+                temp.setId_couleur(resultSet.getInt("id_couleur"));
+                temp.setId_transmission(resultSet.getInt("id_transmission"));
+                temp.setEtat(resultSet.getInt("etat"));
+                temp.setPrix(resultSet.getDouble("prix"));
+                valiny.add(temp);
+            }
+            resultSet.close();
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("Annonce getAllAnnonceByIdUser issues");
+            e.printStackTrace();
+        }
+        return valiny;
+    }
+
+    public static void updateEtatAnnonce(Connection connection, int id_annonce, int etat)
+    {
+        boolean isOuvert = false;
+        String query = "update annonce set etat = "+etat+" where id_annonce = "+id_annonce+";";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            int result = statement.executeUpdate(query);
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("Annonce updateEtatAnnonce issues");
+            e.printStackTrace();
+        }
+    }
 }

@@ -149,3 +149,61 @@ CREATE TABLE Vendu(
    PRIMARY KEY(Id_Vendu),
    FOREIGN KEY(Id_Annonce) REFERENCES Annonce(Id_Annonce)
 );
+
+select
+    *
+from annonce a
+    join Status_lettre st on st.nombre = a.etat
+where Id_User = 1;
+
+with all_annonce as (
+    select
+        Id_Annonce
+    from annonce a
+        join Status_lettre st on st.nombre = a.etat
+    where Id_User = 1
+)
+select
+    *
+from details_annonce
+    join all_annonce on all_annonce.Id_Annonce = details_annonce.id_annonce;
+
+
+create view v_image as
+select
+    a.id_annonce,
+    url_image
+from details_annonce
+join public.annonce a on a.id_annonce = details_annonce.id_annonce;
+
+
+create view v_annonces as
+select
+    Id_Annonce,
+    annee,
+    conso,
+    date_annonce,
+    description,
+    status_lettre.nom as nom_etat,
+    C.nom as nom_carburant,
+    C2.nom as nom_categorie,
+    C3.nom as nom_couleur,
+    M.nom as nom_marque,
+    M2.nom as nom_modele,
+    M3.nom as nom_moteur,
+    t.nom as nom_transmission,
+    Id_User,
+    kilometrage,
+    nbr_place,
+    nbr_porte,
+    prix,
+    Status_lettre.nombre as etat
+    from annonce
+join status_lettre on Status_lettre.nombre=etat
+join Carburant C on annonce.Id_Carburant = C.Id_Carburant
+join Categorie C2 on C2.Id_Categorie = annonce.Id_Categorie
+join Couleur C3 on C3.Id_Couleur = annonce.Id_Couleur
+join Marque M on M.Id_Marque = annonce.Id_Marque
+join Modeles M2 on annonce.Id_Modeles = M2.id_model
+join Moteur M3 on M3.Id_Moteur = annonce.Id_Moteur
+join public.transmission t on annonce.Id_Transmission = t.id_transmission;

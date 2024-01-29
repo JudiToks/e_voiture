@@ -1,6 +1,10 @@
 package cloudy.e_voiture.models;
 
+import cloudy.e_voiture.models.connect.Connect;
 import jakarta.persistence.*;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 @Entity
 @Table(name = "modeles")
@@ -36,5 +40,31 @@ public class Model
     public String toString()
     {
         return String.format("Model[id_model=%d, nom=%s]", id_model, nom);
+    }
+
+    public static void update(Connection connection, int id_model, String nom)
+    {
+        boolean isOuvert = false;
+        String query = "update modeles set id_model = "+id_model+" where nom = '"+nom+"';";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            int result = statement.executeUpdate(query);
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("Model update issues");
+            e.printStackTrace();
+        }
     }
 }

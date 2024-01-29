@@ -1,9 +1,13 @@
 package cloudy.e_voiture.models;
 
+import cloudy.e_voiture.models.connect.Connect;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 @Entity
 public class Moteur
@@ -38,5 +42,31 @@ public class Moteur
     public String toString()
     {
         return String.format("Moteur[id_moteur=%d, nom=%s]", id_moteur, nom);
+    }
+
+    public static void update(Connection connection, int id_moteur, String nom)
+    {
+        boolean isOuvert = false;
+        String query = "update moteur set id_moteur = "+id_moteur+" where nom = '"+nom+"';";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            int result = statement.executeUpdate(query);
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("Moteur update issues");
+            e.printStackTrace();
+        }
     }
 }

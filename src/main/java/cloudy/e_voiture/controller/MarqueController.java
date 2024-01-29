@@ -1,10 +1,16 @@
 package cloudy.e_voiture.controller;
 
+import cloudy.e_voiture.models.Carburant;
 import cloudy.e_voiture.models.Marque;
+import cloudy.e_voiture.models.connect.Connect;
 import cloudy.e_voiture.repository.MarqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
 
 @CrossOrigin
@@ -37,6 +43,23 @@ public class MarqueController
     {
         Marque marque = new Marque(0, nom);
         return marqueRepository.save(marque);
+    }
+
+    @GetMapping("/update/{id}/{nom}")
+    public HashMap<String, Object> update(@PathVariable int id, @PathVariable String nom)
+    {
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Connection connection = Connect.connectToPostgre();
+            Marque.update(connection, id, nom);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+        }
+        return object;
     }
 
     @PostMapping("/delete/{id_marque}")
