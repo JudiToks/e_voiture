@@ -44,7 +44,6 @@ public class AuthenticationController {
             }
             if (!stringBuilder.toString().contains(request.getEmail()))
             {
-                ResponseEntity.ok(service.register(request));
                 objectHashMap.put("status", ResponseEntity.ok(service.register(request)));
             }
             else
