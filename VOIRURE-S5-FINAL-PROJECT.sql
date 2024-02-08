@@ -215,7 +215,7 @@ from details_annonce
 join public.annonce a on a.id_annonce = details_annonce.id_annonce;
 
 
-create view v_annonces as
+create or replace view v_annonces as
 select
     Id_Annonce,
     annee,
