@@ -85,7 +85,7 @@ CREATE SEQUENCE status_lettre_seq START 1;
 CREATE TABLE Status_lettre(
    Id_Status_lettre SERIAL,
    nom VARCHAR(50),
-   nombre VARCHAR(50),
+   nombre integer,
    PRIMARY KEY(Id_Status_lettre)
 );
 
@@ -237,7 +237,7 @@ select
     prix,
     Status_lettre.nombre as etat
     from annonce
-join status_lettre on Status_lettre.nombre=etat
+join status_lettre on Status_lettre.nombre = etat
 join Carburant C on annonce.Id_Carburant = C.Id_Carburant
 join Categorie C2 on C2.Id_Categorie = annonce.Id_Categorie
 join Couleur C3 on C3.Id_Couleur = annonce.Id_Couleur
