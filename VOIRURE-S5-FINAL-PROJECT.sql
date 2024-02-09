@@ -150,6 +150,22 @@ CREATE TABLE Vendu(
    FOREIGN KEY(Id_Annonce) REFERENCES Annonce(Id_Annonce)
 );
 
+CREATE SEQUENCE details_annonce_seq START 1;
+
+CREATE TABLE Details_annonce(
+    Id_Details_annonce serial,
+    Id_Annonce int references Annonce(Id_Annonce),
+    url_image varchar
+);
+
+CREATE SEQUENCE favoris_seq START 1;
+
+CREATE TABLE Favoris(
+    Id_Favoris serial,
+    Id_Annonce int references Annonce(Id_Annonce),
+    Id_User int references Utilisateur(Id_User)
+);
+
 -- ############################################################
 
 -- statistique commission
@@ -237,11 +253,43 @@ select
     prix,
     Status_lettre.nombre as etat
     from annonce
-join status_lettre on Status_lettre.nombre = etat
-join Carburant C on annonce.Id_Carburant = C.Id_Carburant
-join Categorie C2 on C2.Id_Categorie = annonce.Id_Categorie
-join Couleur C3 on C3.Id_Couleur = annonce.Id_Couleur
-join Marque M on M.Id_Marque = annonce.Id_Marque
-join Modeles M2 on annonce.Id_Modeles = M2.id_model
-join Moteur M3 on M3.Id_Moteur = annonce.Id_Moteur
-join public.transmission t on annonce.Id_Transmission = t.id_transmission;
+        join status_lettre on Status_lettre.nombre = etat
+        join Carburant C on annonce.Id_Carburant = C.Id_Carburant
+        join Categorie C2 on C2.Id_Categorie = annonce.Id_Categorie
+        join Couleur C3 on C3.Id_Couleur = annonce.Id_Couleur
+        join Marque M on M.Id_Marque = annonce.Id_Marque
+        join Modeles M2 on annonce.Id_Modeles = M2.id_model
+        join Moteur M3 on M3.Id_Moteur = annonce.Id_Moteur
+        join public.transmission t on annonce.Id_Transmission = t.id_transmission;
+
+
+create or replace view v_recherche as
+select
+ *
+from v_annonces
+    where nom_marque ilike '%%'
+        and nom_modele ilike '%%'
+        and nom_carburant ilike '%%'
+        and nom_moteur ilike '%%'
+        and nom_transmission ilike '%%'
+        and nom_couleur ilike '%%';
+
+
+with resultSearch as (
+    select
+        *
+    from v_recherche
+)
+select
+    *
+from resultSearch
+where (prix between 0 and 0)
+  and nom_categorie ilike '%%'
+  and date_annonce > '2024-02-08';
+
+
+select
+    *
+from Favoris
+    join v_annonces va on Favoris.Id_Annonce = va.Id_Annonce and Favoris.Id_User = va.Id_User
+where Favoris.Id_Annonce = 1 and Favoris.Id_User = 1;

@@ -1,9 +1,6 @@
 package cloudy.e_voiture.controller;
 
-import cloudy.e_voiture.models.Annonce;
-import cloudy.e_voiture.models.AnnonceRequest;
-import cloudy.e_voiture.models.AnnonceUser;
-import cloudy.e_voiture.models.DetailsAnnonce;
+import cloudy.e_voiture.models.*;
 import cloudy.e_voiture.models.connect.Connect;
 import cloudy.e_voiture.repository.AnnonceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,6 +178,64 @@ public class AnnonceController
         } catch (Exception e) {
             object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
             object.put("error", e.getMessage());
+        }
+        return object;
+    }
+
+    @GetMapping("/recherche/{marque}/{model}/{carburant}/{moteur}/{transmission}/{couleur}")
+    public HashMap<String, Object> recherche(@PathVariable String marque, @PathVariable String model, @PathVariable String carburant, @PathVariable String moteur, @PathVariable String transmission, @PathVariable String couleur)
+    {
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Connection connection = Connect.connectToPostgre();
+            List<AnnonceUser> recherche = AnnonceUser.recherche(connection, marque, model, carburant, moteur, transmission, couleur);
+            object.put("recherche", recherche);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+        }
+        return object;
+    }
+
+    @GetMapping("/rechercheAvance/{tranche}/{categorie}/{date}")
+    public HashMap<String, Object> rechercheAvance(@PathVariable String tranche, @PathVariable String categorie, @PathVariable String date) {
+        HashMap<String, Object> object = new HashMap<>();
+        try {
+            double[] tranche_prix = new double[2];
+            String[] stringTranche = tranche.split(" - ");
+            tranche_prix[0] = Double.parseDouble(stringTranche[0]);
+            tranche_prix[1] = Double.parseDouble(stringTranche[1]);
+            Date date_annonce = Date.valueOf(date);
+            Connection connection = Connect.connectToPostgre();
+            List<AnnonceUser> rechercheAvance = AnnonceUser.rechercheAvance(connection, tranche_prix, categorie, date_annonce);
+            object.put("rechercheAvance", rechercheAvance);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+        }
+        return object;
+    }
+
+    @GetMapping("/findAllAnnonceUserFavoris")
+    public HashMap<String, Object> findAllAnnonceUserFavoris(@RequestBody Favoris fav)
+    {
+        HashMap<String, Object> object = new HashMap<>();
+        try
+        {
+            Connection connection = Connect.connectToPostgre();
+            List<AnnonceUser> listFavoris = Favoris.getFavoris(connection, fav.getId_annonce(), fav.getId_user());
+            object.put("listFavoris", listFavoris);
+            object.put("status", new ResponseEntity<>(HttpStatus.OK));
+            connection.close();
+        } catch (Exception e) {
+            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            object.put("error", e.getMessage());
+
         }
         return object;
     }

@@ -11,6 +11,7 @@ import java.util.List;
 
 public class AnnonceUser
 {
+    private String sql;
     private int id_annonce;
     private String description;
     private int nbr_place;
@@ -31,6 +32,15 @@ public class AnnonceUser
     private double prix;
     private DetailsAnnonce detailsAnnonce;
     private int etat;
+
+//    getters & setters
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
     public int getId_annonce() {
         return id_annonce;
@@ -407,4 +417,133 @@ public class AnnonceUser
         }
         return valiny;
     }
+
+    public static List<AnnonceUser> recherche(Connection connection, String marque, String model, String carburant, String moteur, String transmission, String couleur)
+    {
+        boolean isOuvert = false;
+        List<AnnonceUser> valiny = new ArrayList<>();
+        String query = "create or replace view v_recherche as " +
+                "select\n" +
+                "    *\n" +
+                "from v_annonces\n" +
+                "    where nom_marque ilike '%"+marque+"%'\n" +
+                "      and nom_modele ilike '%"+model+"%'\n" +
+                "      and nom_carburant ilike '%"+carburant+"%'\n" +
+                "      and nom_moteur ilike '%"+moteur+"%'\n" +
+                "      and nom_transmission ilike '%"+transmission+"%'\n" +
+                "      and nom_couleur ilike '%"+couleur+"%'";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+            {
+                AnnonceUser temp = new AnnonceUser();
+                temp.setId_annonce(resultSet.getInt("id_annonce"));
+                temp.setDescription(resultSet.getString("description"));
+                temp.setDate_annonce(resultSet.getDate("date_annonce"));
+                temp.setConso(resultSet.getDouble("conso"));
+                temp.setAnnee(resultSet.getInt("annee"));
+                temp.setKilometrage(resultSet.getDouble("kilometrage"));
+                temp.setNbr_place(resultSet.getInt("nbr_place"));
+                temp.setNbr_porte(resultSet.getInt("nbr_porte"));
+                temp.setCarburant(resultSet.getString("nom_carburant"));
+                temp.setCategorie(resultSet.getString("nom_categorie"));
+                temp.setCouleur(resultSet.getString("nom_couleur"));
+                temp.setMarque(resultSet.getString("nom_marque"));
+                temp.setModeles(resultSet.getString("nom_modele"));
+                temp.setMoteur(resultSet.getString("nom_moteur"));
+                temp.setTransmission(resultSet.getString("nom_transmission"));
+                temp.setNom_etat(resultSet.getString("nom_etat"));
+                temp.setPrix(resultSet.getDouble("prix"));
+                temp.setEtat(resultSet.getInt("etat"));
+                DetailsAnnonce temp1 = new DetailsAnnonce();
+                temp.setDetailsAnnonce(temp1.getAllDetailsByIdAnnonce(connection, temp.getId_annonce()));
+                valiny.add(temp);
+            }
+            resultSet.close();
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("AnnonceUser recherche issues");
+            e.printStackTrace();
+        }
+        return valiny;
+    }
+
+    public static List<AnnonceUser> rechercheAvance(Connection connection, double[] tranche_prix, String categorie, Date date_annonce)
+    {
+        boolean isOuvert = false;
+        List<AnnonceUser> valiny = new ArrayList<>();
+        String query = "with resultSearch as (\n" +
+                "    select\n" +
+                "        *\n" +
+                "    from v_recherche\n" +
+                ")\n" +
+                "select\n" +
+                "    *\n" +
+                "from resultSearch\n" +
+                "where (prix between "+tranche_prix[0]+" and "+tranche_prix[1]+") \n" +
+                "  and nom_categorie ilike '%"+categorie+"%' \n" +
+                "  and date_annonce > '"+date_annonce+"';";
+        try
+        {
+            if (connection == null)
+            {
+                connection = Connect.connectToPostgre();
+                isOuvert = true;
+            }
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+            {
+                AnnonceUser temp = new AnnonceUser();
+                temp.setId_annonce(resultSet.getInt("id_annonce"));
+                temp.setDescription(resultSet.getString("description"));
+                temp.setDate_annonce(resultSet.getDate("date_annonce"));
+                temp.setConso(resultSet.getDouble("conso"));
+                temp.setAnnee(resultSet.getInt("annee"));
+                temp.setKilometrage(resultSet.getDouble("kilometrage"));
+                temp.setNbr_place(resultSet.getInt("nbr_place"));
+                temp.setNbr_porte(resultSet.getInt("nbr_porte"));
+                temp.setCarburant(resultSet.getString("nom_carburant"));
+                temp.setCategorie(resultSet.getString("nom_categorie"));
+                temp.setCouleur(resultSet.getString("nom_couleur"));
+                temp.setMarque(resultSet.getString("nom_marque"));
+                temp.setModeles(resultSet.getString("nom_modele"));
+                temp.setMoteur(resultSet.getString("nom_moteur"));
+                temp.setTransmission(resultSet.getString("nom_transmission"));
+                temp.setNom_etat(resultSet.getString("nom_etat"));
+                temp.setPrix(resultSet.getDouble("prix"));
+                temp.setEtat(resultSet.getInt("etat"));
+                DetailsAnnonce temp1 = new DetailsAnnonce();
+                temp.setDetailsAnnonce(temp1.getAllDetailsByIdAnnonce(connection, temp.getId_annonce()));
+                valiny.add(temp);
+            }
+            resultSet.close();
+            statement.close();
+            if (isOuvert)
+            {
+                connection.close();
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("AnnonceUser rechercheAvance issues");
+            e.printStackTrace();
+        }
+        return valiny;
+    }
+
+
 }
