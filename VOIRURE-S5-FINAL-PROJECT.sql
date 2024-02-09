@@ -285,7 +285,7 @@ select
 from resultSearch
 where (prix between 0 and 0)
   and nom_categorie ilike '%%'
-  and date_annonce > '2024-02-08';
+  and (annee between 0 and 0);
 
 
 select

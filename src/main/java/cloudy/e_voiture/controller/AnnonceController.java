@@ -208,9 +208,11 @@ public class AnnonceController
             String[] stringTranche = tranche.split(" - ");
             tranche_prix[0] = Double.parseDouble(stringTranche[0]);
             tranche_prix[1] = Double.parseDouble(stringTranche[1]);
-            Date date_annonce = Date.valueOf(date);
+            double[] annes = new double[2];
+            annes[0] = Double.parseDouble(date.split(" - ")[0]);
+            annes[1] = Double.parseDouble(date.split(" - ")[1]);
             Connection connection = Connect.connectToPostgre();
-            List<AnnonceUser> rechercheAvance = AnnonceUser.rechercheAvance(connection, tranche_prix, categorie, date_annonce);
+            List<AnnonceUser> rechercheAvance = AnnonceUser.rechercheAvance(connection, tranche_prix, categorie, annes);
             object.put("rechercheAvance", rechercheAvance);
             object.put("status", new ResponseEntity<>(HttpStatus.OK));
             connection.close();

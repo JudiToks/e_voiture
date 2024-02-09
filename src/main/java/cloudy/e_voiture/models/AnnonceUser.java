@@ -481,7 +481,7 @@ public class AnnonceUser
         return valiny;
     }
 
-    public static List<AnnonceUser> rechercheAvance(Connection connection, double[] tranche_prix, String categorie, Date date_annonce)
+    public static List<AnnonceUser> rechercheAvance(Connection connection, double[] tranche_prix, String categorie, double[] annees)
     {
         boolean isOuvert = false;
         List<AnnonceUser> valiny = new ArrayList<>();
@@ -495,7 +495,7 @@ public class AnnonceUser
                 "from resultSearch\n" +
                 "where (prix between "+tranche_prix[0]+" and "+tranche_prix[1]+") \n" +
                 "  and nom_categorie ilike '%"+categorie+"%' \n" +
-                "  and date_annonce > '"+date_annonce+"';";
+                "  and (annee between "+annees[0]+" and "+annees[1]+");";
         try
         {
             if (connection == null)
