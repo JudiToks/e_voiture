@@ -182,24 +182,6 @@ public class AnnonceController
         return object;
     }
 
-    @GetMapping("/recherche/{marque}/{model}/{carburant}/{moteur}/{transmission}/{couleur}")
-    public HashMap<String, Object> recherche(@PathVariable String marque, @PathVariable String model, @PathVariable String carburant, @PathVariable String moteur, @PathVariable String transmission, @PathVariable String couleur)
-    {
-        HashMap<String, Object> object = new HashMap<>();
-        try
-        {
-            Connection connection = Connect.connectToPostgre();
-            List<AnnonceUser> recherche = AnnonceUser.recherche(connection, marque, model, carburant, moteur, transmission, couleur);
-            object.put("recherche", recherche);
-            object.put("status", new ResponseEntity<>(HttpStatus.OK));
-            connection.close();
-        } catch (Exception e) {
-            object.put("status", new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
-            object.put("error", e.getMessage());
-        }
-        return object;
-    }
-
     @GetMapping("/rechercheAvance/{tranche}/{categorie}/{date}")
     public HashMap<String, Object> rechercheAvance(@PathVariable String tranche, @PathVariable String categorie, @PathVariable String date) {
         HashMap<String, Object> object = new HashMap<>();

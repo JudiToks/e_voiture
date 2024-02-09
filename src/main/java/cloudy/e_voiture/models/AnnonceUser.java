@@ -485,7 +485,8 @@ public class AnnonceUser
     {
         boolean isOuvert = false;
         List<AnnonceUser> valiny = new ArrayList<>();
-        String query = "with resultSearch as (\n" +
+        String query = "";
+        StringBuilder build = new StringBuilder("with resultSearch as (\n" +
                 "    select\n" +
                 "        *\n" +
                 "    from v_recherche\n" +
@@ -493,9 +494,41 @@ public class AnnonceUser
                 "select\n" +
                 "    *\n" +
                 "from resultSearch\n" +
-                "where (prix between "+tranche_prix[0]+" and "+tranche_prix[1]+") \n" +
-                "  and nom_categorie ilike '%"+categorie+"%' \n" +
-                "  and (annee between "+annees[0]+" and "+annees[1]+");";
+                "where ");
+
+        if (tranche_prix[0] > 0 && categorie != "" && annees[0] > 0)
+        {
+            build.append("(prix between "+tranche_prix[0]+" and "+tranche_prix[1]+") " +
+                    "and nom_categorie ilike '%"+categorie+"%' " +
+                    "and (annee between "+annees[0]+" and "+annees[1]+");");
+        }
+        if (tranche_prix[0] > 0 && categorie != "" && annees[0] == 0)
+        {
+            build.append("(prix between "+tranche_prix[0]+" and "+tranche_prix[1]+") " +
+                    "and nom_categorie ilike '%"+categorie+"%';");
+        }
+        if (tranche_prix[0] > 0 && categorie == "" && annees[0] > 0)
+        {
+            build.append("(prix between "+tranche_prix[0]+" and "+tranche_prix[1]+") " +
+                    "and (annee between "+annees[0]+" and "+annees[1]+");");
+        }
+        if (tranche_prix[0] == 0 && categorie != "" && annees[0] > 0)
+        {
+            build.append("nom_categorie ilike '%"+categorie+"%' " +
+                    "and (annee between "+annees[0]+" and "+annees[1]+");");
+        }
+        if (tranche_prix[0] == 0 && categorie != "" && annees[0] == 0)
+        {
+            build.append("nom_categorie ilike '%"+categorie+"%';");
+        }
+        if (tranche_prix[0] > 0 && categorie == "" && annees[0] == 0)
+        {
+            build.append("nom_categorie ilike '%"+categorie+"%';");
+        }
+        if (tranche_prix[0] > 0 && categorie == "" && annees[0] == 0)
+        {
+            build.append("nom_categorie ilike '%"+categorie+"%';");
+        }
         try
         {
             if (connection == null)
